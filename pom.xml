@@ -23,7 +23,7 @@
 
     <properties>
         <flink.version>1.10.0</flink.version>
-        <scala-binary.version>2.12</scala-binary.version>
+        <scala-binary.version>2.11</scala-binary.version>
         <kafka-connector.version>1.10.0</kafka-connector.version>
         <flink-format.version>1.10.0</flink-format.version>
         <lombok.version>1.18.12</lombok.version>

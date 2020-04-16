@@ -50,20 +50,13 @@ public class HotItems {
             public long extractAscendingTimestamp(UserBehavior userBehavior) {
                 return userBehavior.getTimestamp();
             }
-        }).filter(new FilterFunction<UserBehavior>() {
+        }).filter((FilterFunction<UserBehavior>) userBehavior -> userBehavior.getBehavior().equals("pv"));
 
-            public boolean filter(UserBehavior userBehavior) throws Exception {
-                return userBehavior.getBehavior().equals("pv");
-            }
-        });
-
-        DataStream<ItemViewCount> viewCount = pvData.map(new MapFunction<UserBehavior, ItemViewCount>() {
-            public ItemViewCount map(UserBehavior userBehavior) throws Exception {
-                ItemViewCount itemViewCount = new ItemViewCount();
-                itemViewCount.setItemId(userBehavior.getItemId());
-                itemViewCount.setViewCount(1);
-                return itemViewCount;
-            }
+        DataStream<ItemViewCount> viewCount = pvData.map((MapFunction<UserBehavior, ItemViewCount>) userBehavior -> {
+            ItemViewCount itemViewCount = new ItemViewCount();
+            itemViewCount.setItemId(userBehavior.getItemId());
+            itemViewCount.setViewCount(1);
+            return itemViewCount;
         });
 
 
@@ -77,12 +70,7 @@ public class HotItems {
         //找出topN的浏览量
         SingleOutputStreamOperator<ArrayList<ItemViewCount>> topNData = windowData
                 //欺骗分类器将所有数据都放到一个key去处理
-                .keyBy(new KeySelector<ItemViewCount, String>() {
-                    @Override
-                    public String getKey(ItemViewCount itemViewCount) throws Exception {
-                        return "";
-                    }
-                })
+                .keyBy((KeySelector<ItemViewCount, String>) itemViewCount -> "")
                 .fold(new ArrayList<ItemViewCount>(), new FoldFunction<ItemViewCount, ArrayList<ItemViewCount>>() {
                     public ArrayList<ItemViewCount> fold(ArrayList<ItemViewCount> itemViewCounts, ItemViewCount itemViewCount) {
                         if (itemViewCounts.size() < 3) {
