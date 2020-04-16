@@ -16,8 +16,6 @@ public class OperatorStateUse {
 
         DataStreamSource<String> socketSource = env.socketTextStream("127.0.0.1", 9000);
 
-        CheckpointedFunction
-        env.socketTextStream()
 
 
         env.execute(OperatorStateUse.class.getSimpleName());

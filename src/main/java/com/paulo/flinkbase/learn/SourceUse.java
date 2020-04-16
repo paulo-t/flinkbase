@@ -1,5 +1,6 @@
 package com.paulo.flinkbase.learn;
 
+import com.paulo.flinkbase.source.CounterSource;
 import com.paulo.flinkbase.source.CustomParallelSource;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -14,7 +15,7 @@ public class SourceUse {
     public static void main(String[] args) throws Exception {
         //获取运行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
+        env.setParallelism(2);
         //1.读取文件信息作为数据源
         //获取资源路径
        /* URL resource = SourceUse.class.getClassLoader().getResource("user.txt");
@@ -52,8 +53,11 @@ public class SourceUse {
        /* DataStreamSource<String> customSingleDatasource = env.addSource(new CustomSingleSource());
         customSingleDatasource.print();*/
 
-        DataStreamSource<String> cuntomParallelDataspurce = env.addSource(new CustomParallelSource());
-        cuntomParallelDataspurce.print();
+        /*DataStreamSource<String> cuntomParallelDataspurce = env.addSource(new CustomParallelSource());
+        cuntomParallelDataspurce.print();*/
+
+        DataStreamSource<Long> counterSource = env.addSource(new CounterSource());
+        counterSource.print();
 
         env.execute(SourceUse.class.getSimpleName());
     }
