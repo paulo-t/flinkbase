@@ -61,9 +61,9 @@ public class BufferingSink extends RichSinkFunction<Tuple2<String, Integer>> imp
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
         //获取状态数据
-        ListStateDescriptor<Tuple2<String,Integer>> listStateDescriptor = new ListStateDescriptor<Tuple2<String, Integer>>("buffered-element", TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {
+        ListStateDescriptor<Tuple2<String,Integer>> listStateDescriptor = new ListStateDescriptor<Tuple2<String, Integer>>("buffered-elements", TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {
         }));
-        checkpointState = context.getKeyedStateStore().getListState(listStateDescriptor);
+        checkpointState = context.getOperatorStateStore().getListState(listStateDescriptor);
 
         //恢复状态数据
         if(context.isRestored()){

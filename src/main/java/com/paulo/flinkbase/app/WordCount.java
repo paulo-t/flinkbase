@@ -1,5 +1,6 @@
 package com.paulo.flinkbase.app;
 
+import com.paulo.flinkbase.sink.BufferingSink;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -19,7 +20,7 @@ public class WordCount {
         //1.设置运行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         //2.配置数据源
-        DataStreamSource<String> text = env.readTextFile("F:/flink/student.txt");
+        DataStreamSource<String> text = env.socketTextStream("127.0.0.1",9000);
         //3.进行一系列转换
         SingleOutputStreamOperator<Tuple2<String, Integer>> counts = text.flatMap((FlatMapFunction<String, Tuple2<String, Integer>>) (s, collector) -> {
             String[] words = s.split("\\W+");
@@ -28,7 +29,8 @@ public class WordCount {
             }
         }).returns(Types.TUPLE(Types.STRING,Types.INT)).keyBy(0).sum(1);
         //4.配置输出
-        counts.writeAsText("output");
+        //counts.writeAsText("output");
+        counts.addSink(new BufferingSink(10));
         //5.提交执行
         env.execute(WordCount.class.getSimpleName());
     }
