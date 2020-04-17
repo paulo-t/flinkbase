@@ -62,7 +62,6 @@ public class BroadcastStateUse {
                 } else {
                     collector.collect(Objects.isNull(odd) ? num : odd * num);
                 }
-
             }
 
             /**
