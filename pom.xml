@@ -23,7 +23,7 @@
                     <archive>
                         <manifest>
                             <!--这里指定要运行的main类-->
-                            <mainClass>com.paulo.flinkbase.learn.QueryableStateUse1</mainClass>
+                            <mainClass>com.paulo.flinkbase.learn.QueryableStateUse</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

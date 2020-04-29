@@ -76,7 +76,6 @@ public class BroadcastStateUse {
                     broadcastState.put(splits[0], ParseUtils.ParseDouble(splits[1], 0D));
                     System.out.println("配置更新成功，当前配置信息:" + broadcastState);
                 }
-
             }
         });
 

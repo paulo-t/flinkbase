@@ -37,6 +37,7 @@ public class BufferingSink extends RichSinkFunction<Tuple2<String, Integer>> imp
     public void invoke(Tuple2<String, Integer> value, Context context) {
         bufferElement.add(value);
         if (bufferElement.size() >= threshold) {
+            System.out.println("数据:");
             for (Tuple2<String, Integer> element : bufferElement) {
                 System.out.println("数据已经添加到外部:" + element);
             }
