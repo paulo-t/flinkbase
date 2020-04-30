@@ -1,7 +1,6 @@
 package com.paulo.flinkbase.learn;
 
 import com.google.common.collect.Lists;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
