@@ -7,6 +7,8 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 
 /**
  * 单词统计
@@ -31,6 +33,7 @@ public class WordCount {
         //4.配置输出
         //counts.writeAsText("output");
         counts.addSink(new BufferingSink(10));
+
         //5.提交执行
         env.execute(WordCount.class.getSimpleName());
     }
