@@ -36,7 +36,13 @@ public class BufferingSink extends RichSinkFunction<Tuple2<String, Integer>> imp
     @Override
     public void invoke(Tuple2<String, Integer> value, Context context) {
         bufferElement.add(value);
+
+        if(bufferElement.size() == 100){
+            int i = 1/0;
+        }
+
         if (bufferElement.size() >= threshold) {
+            System.out.println("数据:");
             for (Tuple2<String, Integer> element : bufferElement) {
                 System.out.println("数据已经添加到外部:" + element);
             }
@@ -69,6 +75,10 @@ public class BufferingSink extends RichSinkFunction<Tuple2<String, Integer>> imp
         if(context.isRestored()){
             for (Tuple2<String, Integer> element : checkpointState.get()) {
                 bufferElement.add(element);
+                System.out.println("restore data:");
+                for (Tuple2<String, Integer> stringIntegerTuple2 : bufferElement) {
+                    System.out.println(stringIntegerTuple2);
+                }
             }
         }
     }

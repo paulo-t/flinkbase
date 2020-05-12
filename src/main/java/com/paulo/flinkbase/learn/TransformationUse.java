@@ -37,6 +37,7 @@ public class TransformationUse {
 
         DataStreamSource<String> messages = env.addSource(kafkaConsumer);
         messages.print();
+
         //单流操作->filter
         DataStream<String> filteredDataStream = messages.filter((FilterFunction<String>) str -> !StringUtils.isEmpty(str));
         filteredDataStream.print();
@@ -61,13 +62,25 @@ public class TransformationUse {
         SingleOutputStreamOperator<Tuple2<String, Integer>> reduceDataStream = keyedStream.reduce((ReduceFunction<Tuple2<String, Integer>>) (t1, t2) -> new Tuple2<>(t1.f0, t1.f1 + t2.f1));
         reduceDataStream.print();
 
-        //单流操作->reduce 全量操作 将keyedStream转换成为dataStream
-        keyedStream.process(new ProcessFunction<Tuple2<String, Integer>, Tuple2<String,Integer>>() {
+        //Aggregations 一些常用操作对reduce的封装
+        SingleOutputStreamOperator<Tuple2<String, Integer>> sum = keyedStream.sum(1);
+        sum.print();
+
+        //单流操作->process 将keyedStream转换成为dataStream
+        SingleOutputStreamOperator<Tuple2<String, Integer>> process = keyedStream.process(new ProcessFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
             @Override
-            public void processElement(Tuple2<String, Integer> stringIntegerTuple2, Context context, Collector<Tuple2<String, Integer>> collector) {
-                //collector.collect();
+            public void processElement(Tuple2<String, Integer> stringIntegerTuple2, Context context, Collector<Tuple2<String, Integer>> collector) throws Exception {
+                //获取时间相关信息
+                //context.timerService().currentWatermark();
+                //花去keyedState
+                //getRuntimeContext().getListState();
+                //旁侧输出
+                //context.output();
+                //数据处理
+                collector.collect(new Tuple2<>(stringIntegerTuple2.f0, stringIntegerTuple2.f1 + 1));
             }
         });
+        process.print();
 
         env.execute(TransformationUse.class.getSimpleName());
     }

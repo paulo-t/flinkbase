@@ -1,5 +1,6 @@
 package com.paulo.flinkbase.learn;
 
+import com.paulo.flinkbase.transformation.WordCountFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.state.StateTtlConfig;
@@ -32,14 +33,7 @@ public class KeyStateUse {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> socketSource = env.socketTextStream("127.0.0.1", 9000);
-
-        DataStream<Tuple2<String, Integer>> flatMapSource = socketSource.flatMap((FlatMapFunction<String, Tuple2<String, Integer>>) (str, collector) -> {
-            String[] words = str.split("\\W+");
-            for (String word : words) {
-                collector.collect(new Tuple2<>(word, 1));
-            }
-        }).returns(new TypeHint<Tuple2<String, Integer>>() {
-        });
+        DataStream<Tuple2<String, Integer>> flatMapSource = socketSource.flatMap(new WordCountFunction()).returns(new TypeHint<Tuple2<String, Integer>>() {});
 
         KeyedStream<Tuple2<String, Integer>, Tuple> keyedStream = flatMapSource.keyBy(0);
 
